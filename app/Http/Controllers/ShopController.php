@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ShopController extends Controller
@@ -15,10 +17,10 @@ class ShopController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
+    {
         $categories = Category::all();
         if (request()->category) {
-            $product = Product::whereHas('categories', function($query) {
+            $product = Product::whereHas('categories', function ($query) {
                 $query->where('slug', request()->category);
             })->get();
             $categoryName = $categories->where('slug', request()->category)->first()->name;
@@ -31,6 +33,28 @@ class ShopController extends Controller
             'categories' => $categories,
             'categoryName' => $categoryName,
         ]);
+    }
+
+    public function addcart(Request $request, $id)
+    {
+        if (Auth::id()) {
+            $user = auth()->user();
+
+            $product = Product::find($id);
+
+            $cart = new Cart();
+            $cart->name = $user->name;
+            $cart->phone = $user->phone;
+            $cart->product_title = $product->name;
+            $cart->price = $product->price;
+            $cart->quantity = $request->quantity;
+            $cart->save();
+
+
+            return redirect()->back();
+        } else {
+            return redirect('login');
+        }
     }
 
     /**

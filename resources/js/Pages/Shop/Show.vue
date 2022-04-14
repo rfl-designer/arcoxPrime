@@ -36,11 +36,14 @@
                 <p class="text-2xl text-emerald-900">{{ $filters.formatCurrency(product.price) }}</p>
 
                 <div class="flex flex-col gap-2">
-                <p class="text-base">Quantidade: {{ product.quantity }}</p>
-                <button
-                    class="w-6/12 mb-4 text-xs uppercase font-medium text-black bg-emerald-400 py-2 rounded hover:brightness-90">
-                    ADICIONAR AO CARRINHO
-                </button>
+                    <p class="text-base">Quantidade: {{ product.quantity }}</p>
+                    <form @submit.prevent="form.post(`/addcart/${product.id}`)" class="w-1/2">
+                            <input type="number" v-model="form.quantity" class="hidden">
+                            <button type="submit"
+                                class="text-xs uppercase font-medium text-black bg-emerald-500 py-2 w-full rounded mt-2 hover:brightness-90">
+                                ADICIONAR AO CARRINHO
+                            </button>
+                        </form>
                 </div>
                 <div class="w-6/12 rounded-lg p-4 bg-slate-100 shadow-md flex items-center justify-center">
                     <div class="w-full p-2 rounded-2xl">
@@ -88,13 +91,18 @@
                                 <span aria-hidden="true" class="inset-0 text-black">{{ product.name }}</span>
                                 </Link>
                             </h3>
-                            <p class="mt-1 text-sm text-slate-500 text-center">{{ $filters.formatCurrency(product.price) }}
+                            <p class="mt-1 text-sm text-slate-500 text-center">{{
+                                $filters.formatCurrency(product.price)
+                            }}
                             </p>
                         </div>
-                        <button
-                            class="text-xs uppercase font-medium text-black bg-emerald-500 py-2 w-full rounded mt-2 hover:brightness-90">
-                            ADICIONAR AO CARRINHO
-                        </button>
+                        <form @submit.prevent="form.post(`/addcart/${product.id}`)" class="w-full">
+                            <input type="number" v-model="form.quantity" class="hidden">
+                            <button type="submit"
+                                class="text-xs uppercase font-medium text-black bg-emerald-500 py-2 w-full rounded mt-2 hover:brightness-90">
+                                ADICIONAR AO CARRINHO
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -107,7 +115,7 @@ import AppLayoutCustomer from '@/Layouts/AppLayoutCustomer.vue'
 import BreadcrumbShop from '@/Components/BreadcrumbShop.vue'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { ChevronDownIcon } from '@heroicons/vue/solid'
-import { Link } from '@inertiajs/inertia-vue3'
+import { Link, useForm } from '@inertiajs/inertia-vue3'
 
 
 export default {
@@ -121,6 +129,15 @@ export default {
         Link
     },
     props: ['product', 'products', 'categories'],
+    setup() {
+        const form = useForm({
+            quantity: 1,
+        })
+
+        return {
+            form,
+        }
+    },
 
 }
 </script>

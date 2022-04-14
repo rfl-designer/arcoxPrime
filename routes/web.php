@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Foundation\Application;
@@ -51,3 +52,6 @@ Route::get('/account', function () {
 Route::post('/notify', function () {
     return back()->toast('This notification comes from the server side =)');
 });
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/addcart/{id}', [ShopController::class, 'addcart'])->name('shop.addcart');
